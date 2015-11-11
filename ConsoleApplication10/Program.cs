@@ -13,7 +13,7 @@ namespace ConsoleApplication10
         {
             DateTime date_now = DateTime.Now;
             DateTime date_future = new DateTime(date_now.Year, date_now.Month, date_now.Day + 6);
-            if (date_now <= date_future)
+            if (date_now < date_future)
             {
                 Console.WriteLine("Введiть кiлькiсть людей: ");
                 int n = int.Parse(Console.ReadLine());
@@ -46,15 +46,14 @@ namespace ConsoleApplication10
                     k += 2;
                 }
 
+
                 Console.WriteLine();
                 Console.WriteLine();
 
                 god.money_in_file();
             }
             else
-            {
                 Console.WriteLine("Sorry:)");
-            }
 
 
             Console.ReadLine();
