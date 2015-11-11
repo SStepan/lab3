@@ -18,15 +18,20 @@ namespace ConsoleApplication10
             Name = n;
             sex = s;
         }
-
-        public void Info()
+        
+        public string GetName()
         {
-            Console.Write("Age: {0} \n", Age);
-            Console.Write("Name: {0} \n", Name);
+            return Name;
+        }
+
+        public virtual void Info(bool b = true)
+        {
+            Console.Write("Age: {0}; ", Age);
+            Console.Write("Name: {0}; ", Name);
             if (sex == true)
-                Console.Write("Sex: чоловік \n");
+                Console.Write("Стать: чоловiк; ");
             else
-                Console.Write("Sex: жінка \n");
+                Console.Write("Стать: жiнка; ");
         }
     }
 
@@ -39,10 +44,17 @@ namespace ConsoleApplication10
             patronomyk = pat;
         }
 
-        public void Info()
+        public string GetPatr()
         {
+            return patronomyk;
+        }
+        public override void Info(bool b = true)
+        {
+            if(b == true)
+                Console.BackgroundColor = ConsoleColor.Green;
+            
             base.Info();
-            Console.WriteLine("Patronomyk: {0}", patronomyk);
+            Console.Write("Patronomyk: {0}; ", patronomyk);
         }
     }
 
@@ -55,10 +67,16 @@ namespace ConsoleApplication10
             ratint = r;
         }
 
-        public void Info()
+        public double GetRating()
         {
-            base.Info();
-            Console.Write("rating: {0}", ratint);
+            return ratint;
+        }
+
+        public override void Info(bool b = true)
+        {
+            Console.BackgroundColor = ConsoleColor.Red;
+            base.Info(false);
+            Console.Write("rating: {0}; ", ratint);
         }
     }
 
@@ -67,16 +85,18 @@ namespace ConsoleApplication10
     {
         public int size { get; set; }
 
-        public Parent(int a, string name, bool s, int Size) :
-            base(a, name, s)
+        public Parent(int a, string name, int Size) :
+            base(a, name, true)
         {
             size = Size;
         }
 
-        virtual public void Info()
+        public override void Info(bool b = true)
         {
+            if(b == true)
+                Console.BackgroundColor = ConsoleColor.Yellow;
             base.Info();
-            Console.WriteLine("\nsize: " + size);
+            Console.Write("кiлькiсть дiтей: {0}; ", size);
         }
     }
 
@@ -84,120 +104,221 @@ namespace ConsoleApplication10
     {
         public double money { get; set; }
 
-        public CoolParent(int a, string name, bool s, int Size, double mon) :
-            base(a, name, s, Size)
+        public CoolParent(int a, string name, int Size, double mon) :
+            base(a, name, Size)
         {
             money = mon;
         }
 
-        public void Info()
+        public double GerMoney()
         {
-            base.Info();
-            Console.WriteLine("money: " + money);
+            return money;
+        }
+
+        public override void Info(bool b = true)
+        {
+            Console.BackgroundColor = ConsoleColor.Blue;
+            base.Info(false);
+            Console.Write("money: {0:0.000}; ", money);
         }
     }
 
-    static class Names
-    {
-        public static string[] mas_male = new string[] { "Іван", "Степан", "Андрій", "Антон", "Сергій", "Михайло", "Микола", "Василь" };
-        public static string[] mas_female = new string[] { "Ольга", "Ірина", "Наталія", "Роксолана", "Галина", "Оксана", "Христина" };
-    }
+   
 
-    abstract class HumanFactory
+    abstract class IGod
     {
         public Random rand = new Random();
         public abstract Human CreateHuman();
         public abstract Human CreateHuman(bool sex);
+        public abstract Human CreatePair(Human h);
     }
 
-    class StudenFactory : HumanFactory
+    class StudenGod : IGod
     {
         public override Human CreateHuman()
         {
             if (rand.Next(0, 1) == 0)
-                return new Student(rand.Next(17, 21), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], true, Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)] + "ович");
+                return new Student(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name());
             else
-                return new Student(rand.Next(17, 21), Names.mas_female[rand.Next(0, Names.mas_male.Length - 1)], false, Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)] + "овна");
+                return new Student(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(false));
         }
         public override Human CreateHuman(bool sex)
         {
             if(sex == true)
-                return new Student(rand.Next(17, 21), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], true, Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)] + "ович");
+                return new Student(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name());
             else
-                return new Student(rand.Next(17, 21), Names.mas_female[rand.Next(0, Names.mas_male.Length - 1)], false, Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)] + "овна");
+                return new Student(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(false));
+        }
+
+        public override Human CreatePair(Human s)
+        {
+            return new Parent(ParamsHum.Age_Parent, ParamsHum.Name_from_patr(((Student)s).GetPatr()), ParamsHum.size_children);
         }
     }
 
-    class BotanFactory : HumanFactory
+    class BotanGod : IGod
     {
         public override Human CreateHuman()
         {
             if (rand.Next(0, 1) == 0)
-                return new Botan(rand.Next(17, 21), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], true, Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)] + "ович", rand.Next(30, 50) * 0.1);
+                return new Botan(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name(), ParamsHum.rating);
             else
-                return new Botan(rand.Next(17, 21), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], false, Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)] + "овна", rand.Next(30, 50) * 0.1);
+                return new Botan(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(false), ParamsHum.rating);
         }
         public override Human CreateHuman(bool sex)
         {
             if(sex == true)
-                return new Botan(rand.Next(17, 21), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], true, Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)] + "ович", rand.Next(30, 50) * 0.1);
+                return new Botan(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name(), ParamsHum.rating);
             else
-                return new Botan(rand.Next(17, 21), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], false, Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)] + "овна", rand.Next(30, 50) * 0.1);
+                return new Botan(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(false), ParamsHum.rating);
+        }
+        public override Human CreatePair(Human s)
+        {
+            return new CoolParent(ParamsHum.Age_Parent, ParamsHum.Name_from_patr(((Student)s).GetPatr()), ParamsHum.size_children, Math.Pow(10.0,((Botan)s).GetRating()));
         }
     }
 
-    class ParentFactory : HumanFactory
+    class ParentGod : IGod
     {
         public override Human CreateHuman()
         {
-            if (rand.Next(0, 1) == 0)
-                return new Parent(rand.Next(35, 45), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], true, rand.Next(1, 5));
-            else
-                return new Parent(rand.Next(35, 45), Names.mas_female[rand.Next(0, Names.mas_male.Length - 1)], false, rand.Next(1, 5));
+                return new Parent(ParamsHum.Age_Parent, ParamsHum.Name_male, ParamsHum.size_children);
         }
         public override Human CreateHuman(bool sex)
         {
-            if(sex == true)
-                return new Parent(rand.Next(35, 45), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], true, rand.Next(1, 5));
+            if (sex == true)
+               return CreateHuman();
             else
-                return new Parent(rand.Next(35, 45), Names.mas_female[rand.Next(0, Names.mas_male.Length - 1)], false, rand.Next(1, 5));
+                throw new Exception("Батько може бути тільки чоловічої статі");
+        }
+
+        public override Human CreatePair(Human h)
+        {
+            if (ParamsHum.rand.Next(1, 2) == 1)
+                return new Student(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name(((Parent)h).GetName()));
+            else
+                return new Student(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(((Parent)h).GetName()));
         }
     }
 
-    class CoolParentFactory : HumanFactory
+    class CoolParentGod : IGod
     {
         public override Human CreateHuman()
         {
-            if (rand.Next(0, 1) == 0)
-                return new CoolParent(rand.Next(35, 45), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], true, rand.Next(1, 5), rand.Next(100000, 1000000) * 0.1);
-            else
-                return new CoolParent(rand.Next(35, 45), Names.mas_female[rand.Next(0, Names.mas_male.Length - 1)], false, rand.Next(1, 5), rand.Next(100000, 1000000) * 0.1);
+                return new CoolParent(ParamsHum.Age_Parent, ParamsHum.Name_male, ParamsHum.size_children, ParamsHum.money); 
         }
         public override Human CreateHuman(bool sex)
         {
-            if(sex == true)
-                return new CoolParent(rand.Next(35, 45), Names.mas_male[rand.Next(0, Names.mas_male.Length - 1)], true, rand.Next(1, 5), rand.Next(100000, 1000000) * 0.1);
+            if (sex == true)
+                return new CoolParent(ParamsHum.Age_Parent, ParamsHum.Name_male, ParamsHum.size_children, ParamsHum.money);
             else
-                return new CoolParent(rand.Next(35, 45), Names.mas_female[rand.Next(0, Names.mas_male.Length - 1)], false, rand.Next(1, 5), rand.Next(100000, 1000000) * 0.1);
+                throw new Exception("Батько може бути тільки чоловічої статі");
+        }
+        public override Human CreatePair(Human h)
+        {
+            if (ParamsHum.rand.Next(1, 2) == 1)
+                return new Botan(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name(((Parent)h).GetName()), Math.Log10(((CoolParent)h).GerMoney()));
+            else
+                return new Botan(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(((Parent)h).GetName()), Math.Log10(((CoolParent)h).GerMoney()));
         }
     }
-
-    class Person
+    
+    class God : IGod
     {
         public List<Human> humans = new List<Human>();
+        IGod hum;
 
-        public void CreateHuman(HumanFactory factory)
+        public override Human CreateHuman()
         {
-            humans.Add(factory.CreateHuman());
+            if (humans.Count == 0)
+            {
+                hum = ParamsHum.rand_factory();
+
+                humans.Add(hum.CreateHuman(true));
+                return humans.Last();
+            }
+            else if (humans.Count == 1)
+            {
+                
+                return CreateHuman(false);
+            }
+            else
+            {
+                hum = ParamsHum.rand_factory();
+                humans.Add(hum.CreateHuman());
+                return humans.Last();
+            }
         }
-        public void CreateHuman(HumanFactory fact, bool sex)
+        public override Human CreateHuman(bool sex)
         {
-            humans.Add(fact.CreateHuman(sex));
+            if (sex == false)
+            {
+                do
+                {
+                    hum = ParamsHum.rand_factory();
+                }
+                while (hum is ParentGod);
+            }
+            else
+                hum = ParamsHum.rand_factory();
+
+            humans.Add(hum.CreateHuman(sex));
+            return humans.Last();
         }
         
-        public void Hit()
+        
+
+        public override Human CreatePair(Human h)
         {
-            humans[0].Info();
+            Human human;
+            
+            if (h is Botan)
+            {
+                hum = new BotanGod();
+                human = hum.CreatePair(h);
+                humans.Add(human);
+                return human;
+            }
+            else if(h is CoolParent)
+            {
+                hum = new CoolParentGod();
+                human = hum.CreatePair(h);
+                humans.Add(human);
+                return human;
+            }
+            else if (h is Student)
+            {
+                hum = new StudenGod();
+                human = hum.CreatePair(h);
+                humans.Add(human);
+                return human;
+            }
+            else
+            {
+                hum = new ParentGod();
+                human = hum.CreatePair(h);
+                humans.Add(human);
+                return human;
+            }
+        }
+
+        public double this[int index]
+        {
+            get
+            {
+                if(humans[index] is CoolParent)
+                    return ((CoolParent)humans[index]).GerMoney();
+                else
+                    return 0;
+            }
+        }
+
+        public double GetTotalMoney()
+        {
+            double d = 0;
+            for (int i = 0; i < humans.Count - 1; i++)
+                d += this[i];
+            return d;
         }
     }
 }
