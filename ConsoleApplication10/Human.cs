@@ -156,6 +156,8 @@ namespace ConsoleApplication10
         }
     }
 
+    class fig { }
+
     class BotanGod : IGod
     {
         public override Human CreateHuman()
