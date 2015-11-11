@@ -126,24 +126,23 @@ namespace ConsoleApplication10
 
    
 
-    abstract class IGod
+    interface IGod
     {
-        public Random rand = new Random();
-        public abstract Human CreateHuman();
-        public abstract Human CreateHuman(bool sex);
-        public abstract Human CreatePair(Human h);
+        Human CreateHuman();
+        Human CreateHuman(bool sex);
+        Human CreatePair(Human h);
     }
 
     class StudenGod : IGod
     {
-        public override Human CreateHuman()
+        public Human CreateHuman()
         {
-            if (rand.Next(0, 1) == 0)
+            if (ParamsHum.rand.Next(0, 1) == 0)
                 return new Student(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name());
             else
                 return new Student(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(false));
         }
-        public override Human CreateHuman(bool sex)
+        public Human CreateHuman(bool sex)
         {
             if(sex == true)
                 return new Student(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name());
@@ -151,7 +150,7 @@ namespace ConsoleApplication10
                 return new Student(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(false));
         }
 
-        public override Human CreatePair(Human s)
+        public Human CreatePair(Human s)
         {
             return new Parent(ParamsHum.Age_Parent, ParamsHum.Name_from_patr(((Student)s).GetPatr()), ParamsHum.size_children);
         }
@@ -159,21 +158,21 @@ namespace ConsoleApplication10
 
     class BotanGod : IGod
     {
-        public override Human CreateHuman()
+        public Human CreateHuman()
         {
-            if (rand.Next(0, 1) == 0)
+            if (ParamsHum.rand.Next(0, 1) == 0)
                 return new Botan(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name(), ParamsHum.rating);
             else
                 return new Botan(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(false), ParamsHum.rating);
         }
-        public override Human CreateHuman(bool sex)
+        public Human CreateHuman(bool sex)
         {
             if(sex == true)
                 return new Botan(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name(), ParamsHum.rating);
             else
                 return new Botan(ParamsHum.Age_student, ParamsHum.Name_female, false, ParamsHum.Patr_from_name(false), ParamsHum.rating);
         }
-        public override Human CreatePair(Human s)
+        public Human CreatePair(Human s)
         {
             return new CoolParent(ParamsHum.Age_Parent, ParamsHum.Name_from_patr(((Student)s).GetPatr()), ParamsHum.size_children, Math.Pow(10.0,((Botan)s).GetRating()));
         }
@@ -181,11 +180,11 @@ namespace ConsoleApplication10
 
     class ParentGod : IGod
     {
-        public override Human CreateHuman()
+        public Human CreateHuman()
         {
                 return new Parent(ParamsHum.Age_Parent, ParamsHum.Name_male, ParamsHum.size_children);
         }
-        public override Human CreateHuman(bool sex)
+        public Human CreateHuman(bool sex)
         {
             if (sex == true)
                return CreateHuman();
@@ -193,7 +192,7 @@ namespace ConsoleApplication10
                 throw new Exception("Батько може бути тільки чоловічої статі");
         }
 
-        public override Human CreatePair(Human h)
+        public Human CreatePair(Human h)
         {
             if (ParamsHum.rand.Next(1, 2) == 1)
                 return new Student(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name(((Parent)h).GetName()));
@@ -204,18 +203,18 @@ namespace ConsoleApplication10
 
     class CoolParentGod : IGod
     {
-        public override Human CreateHuman()
+        public Human CreateHuman()
         {
                 return new CoolParent(ParamsHum.Age_Parent, ParamsHum.Name_male, ParamsHum.size_children, ParamsHum.money); 
         }
-        public override Human CreateHuman(bool sex)
+        public Human CreateHuman(bool sex)
         {
             if (sex == true)
                 return new CoolParent(ParamsHum.Age_Parent, ParamsHum.Name_male, ParamsHum.size_children, ParamsHum.money);
             else
                 throw new Exception("Батько може бути тільки чоловічої статі");
         }
-        public override Human CreatePair(Human h)
+        public Human CreatePair(Human h)
         {
             if (ParamsHum.rand.Next(1, 2) == 1)
                 return new Botan(ParamsHum.Age_student, ParamsHum.Name_male, true, ParamsHum.Patr_from_name(((Parent)h).GetName()), Math.Log10(((CoolParent)h).GerMoney()));
@@ -229,7 +228,7 @@ namespace ConsoleApplication10
         public List<Human> humans = new List<Human>();
         IGod hum;
 
-        public override Human CreateHuman()
+        public Human CreateHuman()
         {
             if (humans.Count == 0)
             {
@@ -250,7 +249,7 @@ namespace ConsoleApplication10
                 return humans.Last();
             }
         }
-        public override Human CreateHuman(bool sex)
+        public Human CreateHuman(bool sex)
         {
             if (sex == false)
             {
@@ -269,7 +268,7 @@ namespace ConsoleApplication10
         
         
 
-        public override Human CreatePair(Human h)
+        public Human CreatePair(Human h)
         {
             Human human;
             

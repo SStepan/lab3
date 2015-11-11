@@ -12,8 +12,8 @@ namespace ConsoleApplication10
         static void Main(string[] args)
         {
             DateTime date_now = DateTime.Now;
-            DateTime date_future = new DateTime(date_now.Year, date_now.Month, date_now.Day + 7);
-            if (date_now < date_future)
+            DateTime date_future = new DateTime(date_now.Year, date_now.Month, date_now.Day + 6);
+            if (date_now <= date_future)
             {
                 Console.WriteLine("Введiть кiлькiсть людей: ");
                 int n = int.Parse(Console.ReadLine());
