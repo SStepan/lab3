@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ConsoleApplication10
 {
@@ -319,6 +320,19 @@ namespace ConsoleApplication10
             for (int i = 0; i < humans.Count - 1; i++)
                 d += this[i];
             return d;
+        }
+
+        public void money_in_file()
+        {
+            string text = "кiлькiсть грошей у крутих предкiв: " + Math.Round(this.GetTotalMoney(), 3);
+            Console.BackgroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine(text);
+
+            string path = @"F:\file.txt";
+            using (StreamWriter sw = new StreamWriter(path))
+            {
+                sw.WriteLine(text);
+            }
         }
     }
 }
